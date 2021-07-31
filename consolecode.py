@@ -2,11 +2,15 @@ import js
 import asyncio
 import builtins
 
+def dummy():
+	return
+
 # order of import and queue creation is important!
 builtins.POWACONSOLE_CMD_QUEUE_IN = asyncio.Queue()
 builtins.POWACONSOLE_CMD_QUEUE_OUT = asyncio.Queue()
 builtins.global_wsnet_dispatch_table = {}
 builtins.global_current_websocket = []
+builtins.POWACONSOLE_UPDATE_FILES = dummy
 
 
 from wsnet.protocol import *

@@ -19,7 +19,7 @@ function getAnchor() {
   const queuereadtest = async (pyodide) => {
 	  while(true){
 		  let result = await pyodide.globals.get('builtins').POWACONSOLE_CMD_QUEUE_OUT.get();
-		  console.log(result);
+		  //console.log(result);
 		  if(result.toJs){
 			  // if we get a proxy we need to do the conversion here
 			  // faster than using json
@@ -33,7 +33,7 @@ function getAnchor() {
   };
   
   const queuemonitor = async (pyodide) => {
-	console.log("queuemonitor");
+	console.log("queuemonitor started");
 	queuereadtest(pyodide);
 
 	runCmd = async () => {
@@ -60,14 +60,20 @@ function getAnchor() {
 		// the python code above doesnt block
 		// this is the main communication function
 		document.getElementById("commandButton").disabled = false; 
+		document.getElementById("statusButton").value = "RUNNING";
 		let dunno = {
 			send : (data) => {
 				let res = data.toJs();
-				console.log(res);
+				//console.log(res);
 				wsnet.send(res);
 			}
 		};
 
+		const refreshfiles = () => {
+			console.log("refreshfiles called!");
+		};
+
+		pyodide.globals.get('builtins').POWACONSOLE_UPDATE_FILES=refreshfiles;
 		pyodide.globals.get('builtins').global_current_websocket.append(dunno);
 		wsnet.onclose = function(event) {
 			pyodide.globals.get('builtins').wsnet_onclosed_callback(event);
@@ -75,9 +81,9 @@ function getAnchor() {
 		}
 			
 		wsnet.onmessage = function(event) {
-			console.log(event.data);
+			//console.log(event.data);
 			event.data.arrayBuffer().then(buffer => {
-					console.log(buffer);
+					//console.log(buffer);
 					pyodide.globals.get('wsnet_onmessage_callback')(buffer);
 				}
 			);
@@ -128,7 +134,7 @@ function getAnchor() {
 	var proxyurl = document.getElementById("proxyurl").value;
 	wsnet = new WebSocket(proxyurl);
 	wsnet.onopen = function (event) {
-	  document.getElementById("statusButton").value = "CONNECTED";
+	  document.getElementById("statusButton").value = "CONNECTED, LOADING PYODIDE...";
 	  console.log("WebSocket is open now.");
 	};
 
@@ -136,3 +142,25 @@ function getAnchor() {
 	main();
   
   }
+
+  let saveHistory = () => {
+	let data = document.getElementById("consoleoutput").value;
+	
+	// Convert the text to BLOB.
+	const textToBLOB = new Blob([data], { type: 'text/plain' });
+	const sFileName = 'cmdhistory.txt';	   // The file to save the data.
+
+	let newLink = document.createElement("a");
+	newLink.download = sFileName;
+
+	if (window.webkitURL != null) {
+		newLink.href = window.webkitURL.createObjectURL(textToBLOB);
+	}
+	else {
+		newLink.href = window.URL.createObjectURL(textToBLOB);
+		newLink.style.display = "none";
+		document.body.appendChild(newLink);
+	}
+
+	newLink.click(); 
+}

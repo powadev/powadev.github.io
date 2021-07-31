@@ -27,7 +27,9 @@
 		STATUS: <input id="statusButton" type="button" value="DISCONNECTED"
 			style="background-color:grey" size="50" />
 		<br>
-		Console<br>
+		<br>
+		Console <input id="historydownloadbutton" type="button" value="DOWNLOAD HISTORY"
+				style="background-color:grey" size="50" onclick="saveHistory();" /><br>
 		<textarea id="consoleoutput" name="consoleoutput" rows="30" cols="100"></textarea><br>
 		<textarea id="consoleinput" name="consoleinput" rows="1" cols="95"></textarea>
 		<input id="commandButton" type="button" value="RUN" style="background-color:grey" size="50" disabled onclick="runCmd();" />
