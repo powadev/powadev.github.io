@@ -137,6 +137,9 @@ function getAnchor() {
 	  document.getElementById("statusButton").value = "CONNECTED, LOADING PYODIDE...";
 	  console.log("WebSocket is open now.");
 	};
+	wsnet.onerror = function(event) {
+		console.error("WebSocket error observed:", event);
+	};
 
   
 	main();
