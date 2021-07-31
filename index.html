@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+
+	<head>
+		<script type="text/javascript">
+		var wsnet = null;
+	</script>
+		<script type="text/javascript" src="/js/browserfs.min.js"></script>
+		<script src="/js/pyodide/pyodide.js"></script>
+		<script src="consolescript.js"></script>
+
+
+	</head>
+
+	<body>
+		<br>
+		Set up WSNET proxy on your localhost, then hit the START button, <br>
+		your browser will connect to the proxy and load the Python interpreter.<br>
+		Sample implementation of the WSNET proxy can be found <a href="https://github.com/skelsec/wsnet/">here</a>
+		<br>
+		<br>
+		WS->TCP Proxy url <input type="text" id="proxyurl"
+			value="ws://127.0.0.1:8700">
+		<input id="startButton" type="button" value="START"
+			style="background-color:grey" size="50" onclick="start();" />
+		STATUS: <input id="statusButton" type="button" value="DISCONNECTED"
+			style="background-color:grey" size="50" />
+		<br>
+		Console<br>
+		<textarea id="consoleoutput" name="consoleoutput" rows="30" cols="100"></textarea><br>
+		<textarea id="consoleinput" name="consoleinput" rows="1" cols="95"></textarea>
+		<input id="commandButton" type="button" value="RUN" style="background-color:grey" size="50" onclick="runCmd();" />
+	</body>
+</html>
