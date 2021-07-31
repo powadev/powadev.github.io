@@ -30,6 +30,14 @@
 		Console<br>
 		<textarea id="consoleoutput" name="consoleoutput" rows="30" cols="100"></textarea><br>
 		<textarea id="consoleinput" name="consoleinput" rows="1" cols="95"></textarea>
-		<input id="commandButton" type="button" value="RUN" style="background-color:grey" size="50" onclick="runCmd();" />
+		<input id="commandButton" type="button" value="RUN" style="background-color:grey" size="50" disabled onclick="runCmd();" />
+		<br>
+		<br>
+		Type "help" for list of available commands<br>
+		First command should be "login url". DO NOT FORGET TO add "proxytype=wsnet" in the url params for both LDAP and SMB!! <br>
+		SMB example login command: <br>
+		login "smb2+ntlm-password://TEST\victim:Passw0rd!1@10.10.10.2/?proxytype=wsnet" <br>
+		<br>
+		Switch bethween SMB and LDAP client using the achor in the URL (#smb or #ldap appended to the url)<br>
 	</body>
 </html>

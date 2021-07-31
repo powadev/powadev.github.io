@@ -59,6 +59,7 @@ function getAnchor() {
 	  pyodide.runPythonAsync(pyCode).then(() => {
 		// the python code above doesnt block
 		// this is the main communication function
+		document.getElementById("commandButton").disabled = false; 
 		let dunno = {
 			send : (data) => {
 				let res = data.toJs();
