@@ -34,7 +34,25 @@
 		<textarea id="consoleinput" name="consoleinput" rows="1" cols="95"></textarea>
 		<input id="commandButton" type="button" value="RUN" style="background-color:grey" size="50" disabled onclick="runCmd();" />
 		<br>
+		<input id="refreshFilesButton" type="button" value="REFRESHFILES"
+			style="background-color:grey" size="50" onclick="refreshfiles();" />
+		
 		<br>
+		<br>
+		<input id="addSMBConsoleButton" type="button" value="SMBCONSOLE"
+			style="background-color:grey" size="50" onclick="addConsole('smb');" />
+		<br>
+
+		<label for="ntds">NTDS file</label>
+		<input type="file" id="ntdsfile" name="ntdsfile">
+		<br>
+		<label for="sysreg">SYSTEM hive:</label>
+		<input type="file" id="sysregfile" name="sysregfile">
+		<input id="parseButton" type="button" value="PARSE" style="background-color:grey" size="50" onclick="parseNTDS();" />
+		<br>
+		<br>
+		
+
 		Type "help" for list of available commands<br>
 		First command should be "login url". DO NOT FORGET TO add "proxytype=wsnet" in the url params for both LDAP and SMB!! <br>
 		SMB example login command: <br>

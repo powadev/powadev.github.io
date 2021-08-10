@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+
+	<head>
+		<script type="text/javascript">
+		var wsnet = null;
+	</script>
+		<script type="text/javascript" src="/js/browserfs.min.js"></script>
+		<script src="/js/pyodide/pyodide.js"></script>
+		<script src="ntds.js"></script>
+
+
+	</head>
+
+	<body>
+		<label for="ntds">NTDS file</label>
+		<input type="file" id="ntdsfile" name="ntdsfile">
+		<br>
+		<label for="sysreg">SYSTEM hive:</label>
+		<input type="file" id="sysregfile" name="sysregfile">
+		<input id="parseButton" type="button" value="PARSE" style="background-color:grey" size="50" onclick="start();" />
+		<br>
+	</body>
+</html>

@@ -1,0 +1,46 @@
+
+
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+
+	<head>
+		<script type="text/javascript">
+		var wsnet = null;
+	</script>
+		<script type="text/javascript" src="/js/browserfs.min.js"></script>
+		<script src="/js/pyodide/pyodide.js"></script>
+		<script src="parser.js"></script>
+
+	<style>
+		#drop_zone {
+			border: 5px solid blue;
+			width:  200px;
+			height: 100px;
+		}
+
+	</style>
+
+	</head>
+
+	<body>
+		<label for="ntds">NTDS file</label>
+		<input type="file" id="ntdsfile" name="ntdsfile">
+		<br>
+		<label for="sysreg">SYSTEM hive:</label>
+		<input type="file" id="sysregfile" name="sysregfile">
+		<input id="parseButton" type="button" value="PARSE" style="background-color:grey" size="50" onclick="start();" />
+		<br>
+		<br>
+
+		<div id="drop_zone" ondrop="dropHandler(event);" ondragleave="dragOverHandler(event);" ondragenter="dragOverHandler(event);" ondragover="dragOverHandler(event);">
+			<p>Drag one or more files to this Drop Zone ...</p>
+		  </div>
+		  
+
+
+
+	</body>
+</html>
+
+

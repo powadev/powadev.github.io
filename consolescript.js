@@ -2,10 +2,14 @@ const packages = [
 	'asn1crypto', 'wcwidth', 'asysocks', 'winacl',
 	'tqdm', 'minikerberos', 'prompt-toolkit', 'aiosmb',
 	'msldap', 'wsnet', 'sqlalchemy', 'jackdaw', 'powa',
-	'websockets', 'pypykatz'
+	'websockets', 'pypykatz', 'aesedb'
   ];
 
 var runCmd = null;
+var refreshfiles = null;
+var addConsole = null;
+var currentConsoleId = 0;
+var parseNTDS = null;
 
 function getAnchor() {
     return (document.URL.split('#').length > 1) ? document.URL.split('#')[1] : null;
@@ -35,6 +39,26 @@ function getAnchor() {
   const queuemonitor = async (pyodide) => {
 	console.log("queuemonitor started");
 	queuereadtest(pyodide);
+
+	addConsole = (ctype) => {
+		// add text
+		console.log(ctype);
+		let cid = currentConsoleId.toString();
+		pyodide.globals.get("addconsole")(ctype, cid);
+	}
+
+	parseNTDS = async () => {
+		var ntdsfile = document.getElementById("ntdsfile").files[0];
+		console.log(ntdsfile);
+		var ntdsfilestream = new FileStreamer(ntdsfile);
+
+		var sysregfile = document.getElementById("sysregfile").files[0];
+		console.log(sysregfile);
+		var sysregfilestream = new FileStreamer(sysregfile);
+
+		await pyodide.globals.get("parseNTDS")(sysregfilestream, ntdsfilestream);
+
+	}
 
 	runCmd = async () => {
 		// KEEP THE WSNET PARAMETER NAME EVEN IF YOU MODIFY THE URL!!!!
@@ -69,10 +93,6 @@ function getAnchor() {
 			}
 		};
 
-		const refreshfiles = () => {
-			console.log("refreshfiles called!");
-		};
-
 		pyodide.globals.get('builtins').POWACONSOLE_UPDATE_FILES=refreshfiles;
 		pyodide.globals.get('builtins').global_current_websocket.append(dunno);
 		wsnet.onclose = function(event) {
@@ -88,7 +108,6 @@ function getAnchor() {
 				}
 			);
 		}
-
 		queuemonitor(pyodide);
 	  });
 	});
@@ -166,4 +185,106 @@ function getAnchor() {
 	}
 
 	newLink.click(); 
+}
+
+/*
+const fileStreamer = new FileStreamer(aFile);
+while (!fileStreamer.isEndOfFile()) {
+  const data = await fileStreamer.readBlockAsText();
+  console.log(data);
+}
+*/
+
+class FileStreamer {
+    constructor(file) {
+        this.file = file;
+        this.offset = 0;
+    }
+    isEndOfFile() {
+        return this.offset >= this.getFileSize();
+    }
+	seek = async (n, whence = 0) =>  {
+		//console.log("SEEK N" + n);
+		//console.log("WHNECE " + whence)
+		//n = parseInt(n);
+		whence = parseInt(whence);
+		if(whence == 0){
+			this.offset = n;
+			return;
+		}
+		if(whence == 1){
+			this.offset += n;
+			return;
+		}
+		if(whence == 2){
+			// n must be negative
+			this.offset = this.getFileSize() +  n;
+			return;
+		}
+	}
+	tell() {
+		return this.offset;
+	}
+	close = async () => {
+		return;
+	}
+
+    read(length) {
+		//console.log("LEN: " + length);
+		//console.log("OFF: " + this.offset);
+		//console.log("END: " + (this.offset + length));
+		//length = parseInt(length);
+        const fileReader = new FileReader();
+        const blob = this.file.slice(this.offset, this.offset + length);
+        return new Promise((resolve, reject) => {
+            fileReader.onloadend = (event) => {
+                const target = (event.target);
+                if (target.error == null) {
+                    const result = target.result;
+					//console.log("RESULT :" + result);
+					//console.log("RES LEN: " + result.length);
+
+                    this.offset += result.byteLength;
+                    //this.testEndOfFile();
+                    resolve(result);
+                }
+                else {
+                    reject(target.error);
+                }
+            };
+            fileReader.readAsArrayBuffer(blob);
+			//fileReader.readAsBinaryString(blob);
+        });
+    }
+    testEndOfFile() {
+        if (this.isEndOfFile()) {
+            console.log('Done reading file');
+        }
+    }
+    getFileSize() {
+        return this.file.size;
+    }
+}
+
+parseNTDS = async () => {
+	var file = document.getElementById("ntdsfile").files[0];
+	console.log(file);
+	var filestreamer = new FileStreamer(file);
+	await filestreamer.seek(0x100);
+	var result = await filestreamer.read(0x100);
+	console.log(result)
+	await filestreamer.seek(0x1000);
+	var result = await filestreamer.read(0x5);
+	console.log(result)
+	await filestreamer.seek(0x0ADA);
+	var result = await filestreamer.read(0xAD);
+	console.log(result)
+	await filestreamer.seek(0x100);
+	var result = await filestreamer.read(0x22);
+	console.log(result)
+	var result = await filestreamer.read(32);
+	console.log(result)
+	var result = await filestreamer.read(16);
+	console.log(result)
+
 }
